@@ -1,0 +1,49 @@
+gplink-0.13.7 beta
+Map File - Created 2-3-2011  23:37:58
+ 
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   00000000    program   0x000002
+                   .org_4       code   0x000004    program   0x000002
+                  .org_10       code   0x000010    program   0x000028
+                  .org_30       code   0x000030    program   0x000120
+                  .config       code   0x002007    program   0x000002
+ 
+                              Program Memory Usage
+                               Start         End
+                           ---------   ---------
+                            0x002007    0x002007
+                            00000000    00000000
+                            0x000004    0x000004
+                            0x000010    0x000023
+                            0x000030    0x0000bf
+ 
+                            167 program addresses used
+ 
+                              Symbols
+                     Name    Address   Location    Storage File
+                ---------  ---------  ---------  --------- ---------
+                      ISR   0x000010    program     static motor-control2.asm
+                    setup   0x000030    program     static motor-control2.asm
+                 pre_init   0x00004e    program     static motor-control2.asm
+          not_initialized   0x000059    program     static motor-control2.asm
+                post_init   0x00005d    program     static motor-control2.asm
+                     main   0x000064    program     static motor-control2.asm
+             eval_sensors   0x000077    program     static motor-control2.asm
+                    case0   0x00008a    program     static motor-control2.asm
+                   case1a   0x00008c    program     static motor-control2.asm
+                   case1b   0x00008f    program     static motor-control2.asm
+                    case2   0x000092    program     static motor-control2.asm
+                    case3   0x000095    program     static motor-control2.asm
+                    case4   0x000098    program     static motor-control2.asm
+                    case5   0x0000a0    program     static motor-control2.asm
+                    case6   0x0000a3    program     static motor-control2.asm
+                    case7   0x0000a6    program     static motor-control2.asm
+                    case8   0x0000ab    program     static motor-control2.asm
+            motor_forward   0x0000ae    program     static motor-control2.asm
+              stop_motors   0x0000b1    program     static motor-control2.asm
+               go_stright   0x0000b7    program     static motor-control2.asm
+                turn_left   0x0000ba    program     static motor-control2.asm
+               turn_right   0x0000bd    program     static motor-control2.asm
+ 

@@ -1,0 +1,315 @@
+gplink-0.13.7 beta
+Copyright (c) 1998-2005 gputils project
+Listing File Generated: 2-3-2011  23:37:58
+ 
+ 
+Address  Value    Disassembly              Source
+-------  -----    -----------              ------
+                                           ; -----------------------------------------------------------------------
+                                           ; SAC 2.0 Project
+                                           ; Jorge Gómez <syvic@sindormir.net> 2010
+                                           ; -----------------------------------------------------------------------
+                                           
+                                           
+                                           ; Si he estado alguna vez levantado, al cambiar el estado que solo ponga los motores en marcha cuando haya detectado línea en algún lugar
+                                           
+                                           
+                                           #include <p16f648a.inc>
+                                                   LIST
+                                           ; P16F648A.INC  Standard Header File, Version 1.00    Microchip Technology, Inc.
+                                                   NOLIST
+                                           	__CONFIG _WDT_OFF & _PWRTE_OFF & _INTOSC_OSC_NOCLKOUT & _MCLRE_OFF & _BODEN_OFF & _LVP_OFF & _DATA_CP_OFF & _CP_OFF
+                                           
+                                           	list    p=16F648A
+                                           
+                                           #define		SensorSD	PORTA,0
+                                           #define		SensorPD	PORTA,1
+                                           #define		SensorPI	PORTA,2
+                                           #define		SensorSI	PORTA,3
+                                           #define		TakeExit	PORTA,4
+                                           #define		MCLR_Pin	PORTA,5
+                                           #define		Speed_LSB	PORTA,6
+                                           #define		Speed_MSB	PORTA,7
+                                           #define		Interrupt	PORTB,0
+                                           #define		Motor_left	PORTB,1
+                                           #define		Motor_right	PORTB,2
+                                           #define		Motor_fw	PORTB,3
+                                           #define		Motor_bw	PORTB,4
+                                           #define		OffRoadSignLSB	PORTB,5
+                                           #define		OffRoadSignMSB	PORTB,6
+                                           #define		TakeExitLed	PORTB,7
+                                           
+                                           ;INT_VAR UDATA_SHR
+                                           w_saved		equ	0x20
+                                           status_saved	equ	0x21
+                                           pclath_saved	equ	0x22
+                                           
+                                           reg_speed	equ	0x30
+                                           reg_ts		equ	0x31
+                                           reg_sensors	equ	0x32
+                                           reg_last_seen	equ	0x33	; reg_last_seen,0 => 1 == right, 0 == left
+                                           reg_offroad	equ	0x34
+                                           
+                                           ; -----------------------------------------------------------------------
+                                           ; reiniciar vector
+                                            ORG 0x000
+000000   2830     goto	0x30                	goto	setup
+                                           
+                                           ; vector de interrupciones
+                                            ORG 0x004
+000004   2810     goto	0x10                	goto	ISR
+                                            
+                                            ORG 0x010
+                                           ISR
+000010   00a0     movwf	0x20               	movwf	w_saved		; save context
+000011   0e03     swapf	0x3, w             	swapf	STATUS,w
+000012   00a1     movwf	0x21               	movwf	status_saved
+000013   0183     clrf	0x3                 	clrf	STATUS
+                                           
+000014   01b0     clrf	0x30                	clrf	reg_speed	; read speed pins and save PWM duty cycle
+000015   0103     clrw                     	clrw			
+000016   1b05     btfsc	0x5, 0x6           	btfsc	Speed_LSB
+000017   3e40     addlw	0x40               	addlw	d'64'
+000018   1b85     btfsc	0x5, 0x7           	btfsc	Speed_MSB
+000019   3e80     addlw	0x80               	addlw	d'128'
+00001a   00b0     movwf	0x30               	movwf	reg_speed
+                                           
+                                           	;nuevo metodo de calcular vel
+                                           	;movlw	0xC0		; Leemos Speed_MSB Y Speed_LSB
+                                           	;andwf	PORTB,W
+                                           	;movwf	reg_speed
+                                           	;btfss	STATUS,Z
+                                           	;movlw	0x20		; Añadimos 64 si era más de 0
+                                           	;movf	reg_speed,F
+                                           	;btfss	STATUS,Z
+                                           	;addwf	reg_speed
+                                           
+00001b   1031     bcf	0x31, 0              	bcf	reg_ts,0	; read take exit pin
+00001c   1a05     btfsc	0x5, 0x4           	btfsc	TakeExit
+00001d   1431     bsf	0x31, 0              	bsf	reg_ts,0
+                                           	
+00001e   0e21     swapf	0x21, w            	swapf	status_saved,w	; recover context
+00001f   0083     movwf	0x3                	movwf	STATUS
+000020   0ea0     swapf	0x20, f            	swapf	w_saved,f
+000021   0e20     swapf	0x20, w            	swapf	w_saved,w
+                                           
+000022   108b     bcf	0xb, 0x1             	bcf	INTCON,INTF
+000023   0009     retfie                   	retfie
+                                           
+                                            ORG 0x030
+                                           
+                                           setup
+000030   3007     movlw	0x7                	movlw	0X07 		; turns off comparers and enable pins
+000031   009f     movwf	0x1f               	movwf	CMCON 		; for I/O
+                                           	
+000032   160b     bsf	0xb, 0x4             	bsf	INTCON,INTE	; Interruputs
+000033   178b     bsf	0xb, 0x7             	bsf	INTCON,GIE
+                                           
+000034   1683     bsf	0x3, 0x5             	banksel	PCON		; Banco 1
+000035   1303     bcf	0x3, 0x6             
+                                           	
+000036   300b     movlw	0xb                	movlw	b'00001011'	; speed clock setting
+000037   008e     movwf	0xe                	movwf	PCON
+                                           	
+000038   30ff     movlw	0xff               	movlw	b'11111111'	; Porta configuration
+000039   0085     movwf	0x5                	movwf	TRISA
+00003a   3001     movlw	0x1                	movlw	b'00000001'	; Portb configuration
+00003b   0086     movwf	0x6                	movwf	TRISB
+                                           
+00003c   30f9     movlw	0xf9               	movlw	0xF9		; Timer2 period register
+00003d   0092     movwf	0x12               	movwf	PR2
+                                           
+00003e   1283     bcf	0x3, 0x5             	banksel	CCPR1L		; Banco 0
+00003f   1303     bcf	0x3, 0x6             
+                                           
+000040   3000     movlw	0                  	movlw	0x00		; pwm off
+000041   0095     movwf	0x15               	movwf	CCPR1L
+                                           
+000042   300c     movlw	0xc                	movlw	b'00001100'	; Enable PWM mode
+000043   0097     movwf	0x17               	movwf	CCP1CON
+                                           
+000044   3004     movlw	0x4                	movlw	b'00000100'	; Switch on timer2 with no pre/post scaler
+000045   0092     movwf	0x12               	movwf	T2CON
+                                           	
+000046   0186     clrf	0x6                 	clrf	PORTB 		; clear ports
+000047   0185     clrf	0x5                 	clrf	PORTA
+                                           	
+                                           	; Clear registers
+000048   01b0     clrf	0x30                	clrf	reg_speed
+000049   01b1     clrf	0x31                	clrf	reg_ts
+00004a   01b2     clrf	0x32                	clrf	reg_sensors
+00004b   01b3     clrf	0x33                	clrf	reg_last_seen
+00004c   01b4     clrf	0x34                	clrf	reg_offroad
+                                           
+00004d   284e     goto	0x4e                	goto	pre_init
+                                           
+                                           pre_init
+00004e   20b1     call	0xb1                	call	stop_motors
+00004f   300f     movlw	0xf                	movlw	b'00001111'	; Sensor reading 
+000050   0505     andwf	0x5, w             	andwf	PORTA,W
+000051   00b2     movwf	0x32               	movwf	reg_sensors
+000052   1903     btfsc	0x3, 0x2           	btfsc	STATUS,Z	; Is sensor read 0000 ?
+000053   2859     goto	0x59                	goto	not_initialized
+                                           	
+000054   300f     movlw	0xf                	movlw	b'00001111'	; 1111 ?
+000055   0232     subwf	0x32, w            	subwf	reg_sensors,W
+000056   1903     btfsc	0x3, 0x2           	btfsc	STATUS,Z
+000057   2859     goto	0x59                	goto	not_initialized
+000058   285d     goto	0x5d                	goto	post_init
+                                           
+                                           not_initialized
+000059   1434     bsf	0x34, 0              	bsf	reg_offroad,0
+00005a   1686     bsf	0x6, 0x5             	bsf	OffRoadSignLSB
+00005b   1706     bsf	0x6, 0x6             	bsf	OffRoadSignMSB
+00005c   284e     goto	0x4e                	goto	pre_init
+                                           
+                                           post_init
+00005d   1034     bcf	0x34, 0              	bcf	reg_offroad,0
+00005e   1286     bcf	0x6, 0x5             	bcf	OffRoadSignLSB
+00005f   1306     bcf	0x6, 0x6             	bcf	OffRoadSignMSB	
+000060   08b0     movf	0x30, f             	movf	reg_speed,F
+000061   1903     btfsc	0x3, 0x2           	btfsc	STATUS,Z	; Estas dos lineas quizá está mejor comentadas
+000062   284e     goto	0x4e                	goto	pre_init	;
+                                           
+000063   2864     goto	0x64                	goto 	main
+                                           
+                                           main
+000064   20ae     call	0xae                	call	motor_forward	; start motors
+                                           
+000065   300f     movlw	0xf                	movlw	b'00001111'	; Sensor reading
+000066   0505     andwf	0x5, w             	andwf	PORTA,W
+000067   00b2     movwf	0x32               	movwf	reg_sensors
+                                           
+000068   1c34     btfss	0x34, 0            	btfss	reg_offroad,0	; Are we in off road state?
+000069   2877     goto	0x77                	goto	eval_sensors
+                                           
+00006a   0832     movf	0x32, w             	movf	reg_sensors,W	; Still reading 0000?
+00006b   1903     btfsc	0x3, 0x2           	btfsc	STATUS,Z
+00006c   2859     goto	0x59                	goto	not_initialized
+                                           
+00006d   3c0f     sublw	0xf                	sublw	b'00001111'	; Still reading 1111?
+00006e   1c03     btfss	0x3, 0             	btfss	STATUS,C
+00006f   2864     goto	0x64                	goto	main	
+                                           
+000070   1434     bsf	0x34, 0              	bsf	reg_offroad,0
+000071   1286     bcf	0x6, 0x5             	bcf	OffRoadSignLSB
+000072   1306     bcf	0x6, 0x6             	bcf	OffRoadSignMSB	
+                                           	
+000073   1386     bcf	0x6, 0x7             	bcf	TakeExitLed
+000074   1831     btfsc	0x31, 0            	btfsc	reg_ts,0
+000075   1786     bsf	0x6, 0x7             	bsf	TakeExitLed
+                                           
+000076   2877     goto	0x77                	goto	eval_sensors
+                                           
+                                           eval_sensors ;Adaptado sensores
+000077   300f     movlw	0xf                	movlw	0x0F
+000078   0532     andwf	0x32, w            	andwf	reg_sensors,W
+000079   0782     addwf	0x2, f             	addwf   PCL,F				; Checked No TS	; Checked TS		; Notas
+00007a   28a0     goto	0xa0                	goto	case5		; 0000	V			
+00007b   28ab     goto	0xab                	goto	case8		; 0001	V	ok		
+00007c   2892     goto	0x92                	goto	case2		; 0010	V			
+00007d   2892     goto	0x92                	goto	case2		; 0011	V			
+00007e   2895     goto	0x95                	goto	case3		; 0100	V			
+00007f   288f     goto	0x8f                	goto	case1b		; 0101	V	ok		
+000080   28a6     goto	0xa6                	goto	case7		; 0110	V	ok		
+000081   2892     goto	0x92                	goto	case2		; 0111	V	ok		
+000082   28a3     goto	0xa3                	goto	case6		; 1000	V	ok		
+000083   288a     goto	0x8a                	goto	case0		; 1001	V	ok		
+000084   288c     goto	0x8c                	goto	case1a		; 1010	V	ok					?Seguro que last_seen a la derecha?
+000085   288f     goto	0x8f                	goto	case1b		; 1011	V	ok		
+000086   2895     goto	0x95                	goto	case3		; 1100	V	ok		
+000087   288c     goto	0x8c                	goto	case1a		; 1101	V	ok
+000088   2895     goto	0x95                	goto	case3		; 1110	V	ok		
+000089   2898     goto	0x98                	goto	case4		; 1111	V			
+                                           
+                                           
+                                           case0	; Don't turn, don't alter last seen
+00008a   20b7     call	0xb7                	call	go_stright
+00008b   2864     goto	0x64                	goto	main
+                                           
+                                           case1a	; Don't turn, last seen on right
+00008c   20b7     call	0xb7                	call	go_stright
+00008d   1433     bsf	0x33, 0              	bsf	reg_last_seen,0
+00008e   2864     goto	0x64                	goto	main
+                                           
+                                           case1b	; Don't turn, last seen on left
+00008f   20b7     call	0xb7                	call	go_stright
+000090   1033     bcf	0x33, 0              	bcf	reg_last_seen,0
+000091   2864     goto	0x64                	goto	main
+                                           
+                                           case2	; Turn left, last seen on left
+000092   20ba     call	0xba                	call	turn_left
+000093   1033     bcf	0x33, 0              	bcf	reg_last_seen,0
+000094   2864     goto	0x64                	goto	main
+                                           
+                                           case3	; Turn right, last seen on right
+000095   20bd     call	0xbd                	call	turn_right
+000096   1433     bsf	0x33, 0              	bsf	reg_last_seen,0
+000097   2864     goto	0x64                	goto	main
+                                           
+                                           case4	; Road lost
+000098   1833     btfsc	0x33, 0            	btfsc	reg_last_seen,0
+000099   20bd     call	0xbd                	call	turn_right
+00009a   1c33     btfss	0x33, 0            	btfss	reg_last_seen,0
+00009b   20ba     call	0xba                	call	turn_left
+                                           	
+00009c   1434     bsf	0x34, 0              	bsf	reg_offroad,0
+00009d   1686     bsf	0x6, 0x5             	bsf	OffRoadSignLSB
+00009e   1306     bcf	0x6, 0x6             	bcf	OffRoadSignMSB
+00009f   2864     goto	0x64                	goto	main
+                                           
+                                           case5	; Game over
+0000a0   20b7     call	0xb7                	call	go_stright
+0000a1   20b1     call	0xb1                	call	stop_motors
+                                           
+0000a2   2859     goto	0x59                	goto	not_initialized
+                                           
+                                           case6	; Exit on the right [1000]
+0000a3   1831     btfsc	0x31, 0            	btfsc	reg_ts,0
+0000a4   20bd     call	0xbd                	call	turn_right
+0000a5   2864     goto	0x64                	goto	main
+                                           
+                                           case7	; [0110]
+0000a6   1831     btfsc	0x31, 0            	btfsc	reg_ts,0
+0000a7   20bd     call	0xbd                	call	turn_right
+0000a8   1c31     btfss	0x31, 0            	btfss	reg_ts,0
+0000a9   20ba     call	0xba                	call	turn_left
+0000aa   2864     goto	0x64                	goto	main
+                                           
+                                           case8	; Exit on the left [0001]
+0000ab   1c31     btfss	0x31, 0            	btfss	reg_ts,0
+0000ac   20ba     call	0xba                	call	turn_left
+0000ad   2864     goto	0x64                	goto	main
+                                           
+                                           ; -----------------------------------------------------------------------
+                                           ; movement routines
+                                           
+                                           motor_forward
+0000ae   0830     movf	0x30, w             	movf	reg_speed,W
+0000af   0095     movwf	0x15               	movwf	CCPR1L
+0000b0   0008     return                   	return
+                                           
+                                           stop_motors
+0000b1   0195     clrf	0x15                	clrf	CCPR1L
+0000b2   1186     bcf	0x6, 0x3             	bcf	Motor_fw
+0000b3   1206     bcf	0x6, 0x4             	bcf	Motor_bw
+0000b4   1086     bcf	0x6, 0x1             	bcf	Motor_left
+0000b5   1106     bcf	0x6, 0x2             	bcf	Motor_right
+0000b6   0008     return                   	return
+                                           
+                                           go_stright
+0000b7   1106     bcf	0x6, 0x2             	bcf	Motor_right
+0000b8   1086     bcf	0x6, 0x1             	bcf	Motor_left
+0000b9   0008     return                   	return
+                                           
+                                           turn_left
+0000ba   1106     bcf	0x6, 0x2             	bcf	Motor_right
+0000bb   1486     bsf	0x6, 0x1             	bsf	Motor_left
+0000bc   0008     return                   	return
+                                           
+                                           turn_right
+0000bd   1086     bcf	0x6, 0x1             	bcf	Motor_left
+0000be   1506     bsf	0x6, 0x2             	bsf	Motor_right
+0000bf   0008     return                   	return
+                                           
+                                           	END
