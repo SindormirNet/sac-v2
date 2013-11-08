@@ -1,0 +1,126 @@
+#include "cyspi.h"
+
+CYSPI::CYSPI() {
+
+}
+
+CYSPI::~CYSPI() {
+
+}
+
+void CYSPI::config() {
+  pinMode(SPI_MOSI,      OUTPUT);
+  pinMode(SPI_MISO,      INPUT);
+  pinMode(SPI_SCK,       OUTPUT);
+  pinMode(SPI_SS,        OUTPUT);  
+}
+
+void CYSPI::init() {
+  byte garbage;
+
+  digitalWrite(SPI_SS,HIGH); //Disable module
+  delay(6);                  //Needed for the cywm6935 module to work
+
+  //Max clock for CYWM6935 = 2Mhz
+  SPCR = ( (0<<SPIE) | (1<<SPE) | (0<<DORD) | (1<<MSTR)| (0<<CPOL)| (1<<CPHA)| (0<<SPR1) | (1<<SPR0)); //Don't change this
+
+  garbage = SPSR;  //Clear status register
+  garbage = SPDR;  //Clear data register
+}
+
+
+byte CYSPI::unsafeRead(byte reg) {
+  byte reply;
+
+  digitalWrite(SPI_SS,LOW);
+  SPDR = reg & READ_OFFSET;
+  while (!(SPSR & (1 << SPIF)));
+  SPDR = 0x00;
+  while (!(SPSR & (1 << SPIF)));
+  reply = SPDR;
+  digitalWrite(SPI_SS,HIGH);
+  return reply;
+}
+
+byte CYSPI::read(byte reg) {
+  byte reply;
+  byte reply2;
+
+  digitalWrite(SPI_SS,LOW);
+  SPDR = reg & READ_OFFSET;
+  while (!(SPSR & (1 << SPIF)));
+  SPDR = 0x00;
+  while (!(SPSR & (1 << SPIF)));
+  reply = SPDR;
+  digitalWrite(SPI_SS,HIGH);
+
+  digitalWrite(SPI_SS,LOW);
+  SPDR = reg & READ_OFFSET;
+  while (!(SPSR & (1 << SPIF)));
+  SPDR = 0x00;
+  while (!(SPSR & (1 << SPIF)));
+  reply2 = SPDR;
+  digitalWrite(SPI_SS,HIGH);  
+
+  if (reply!=reply2) reply=spi.read(reg);
+  return reply;
+}
+
+void CYSPI::unsafeWrite(byte reg, byte msg) {
+  digitalWrite(SPI_SS,LOW);
+
+  SPDR = reg | WRITE_OFFSET;
+  while (!(SPSR & (1 << SPIF)));
+
+  SPDR = msg;
+  while (!(SPSR & (1 << SPIF)));
+
+  digitalWrite(SPI_SS,HIGH);
+}
+
+void CYSPI::write(byte reg, byte msg) {
+  byte read_data;
+
+  do {    
+    spi.unsafeWrite(reg,msg);
+    read_data = spi.read(reg);
+  } 
+  while (read_data != msg);
+}
+
+void CYSPI::fileRead(byte reg, byte len, byte *dest) {
+  byte i;
+  digitalWrite(SPI_SS,LOW);
+  SPDR = reg & READ_OFFSET | BURST_OFFSET; 
+  while (!(SPSR & (1 << SPIF)));
+  for (i=0; i<len; i++, dest++) {
+    SPDR = 0x00;
+    while (!(SPSR & (1 << SPIF)));
+    *(byte *)dest = SPDR;
+  }
+  digitalWrite(SPI_SS,HIGH);
+}
+
+void CYSPI::fileWrite(byte reg, byte len, byte *src) {
+  byte i;
+  byte data;
+
+  digitalWrite(SPI_SS,LOW);
+  SPDR = reg | WRITE_OFFSET | BURST_OFFSET; 
+  while (!(SPSR & (1 << SPIF)));
+  for (i=0; i<len; i++, src++) {
+    data= *(byte *)src;
+    SPDR = data;
+    while (!(SPSR & (1 << SPIF)));
+  }
+  digitalWrite(SPI_SS,HIGH);
+} 
+
+void CYSPI::setSlave(boolean status) {
+  digitalWrite (SPI_SS, status);  
+}
+
+void CYSPI::setClock(boolean status) {
+  digitalWrite (SPI_SCK, status);  
+}
+

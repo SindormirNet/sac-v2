@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/new/graphics">
+        <file alias="pista">resources/pista-nueva.png</file>
+    </qresource>
+    <qresource prefix="/new/icons">
+        <file>resources/arrow-down-double.png</file>
+        <file>resources/arrow-down.png</file>
+        <file>resources/arrow-left-double.png</file>
+        <file>resources/arrow-left.png</file>
+        <file>resources/arrow-right-double.png</file>
+        <file>resources/arrow-right.png</file>
+        <file>resources/arrow-up-double.png</file>
+        <file>resources/arrow-up.png</file>
+        <file>resources/arrow-down-left.png</file>
+        <file>resources/arrow-down-right.png</file>
+        <file>resources/arrow-up-left.png</file>
+        <file>resources/arrow-up-right.png</file>
+        <file>resources/pista-nueva.png</file>
+        <file>resources/network-connect.png</file>
+        <file>resources/network-disconnect.png</file>
+    </qresource>
+</RCC>

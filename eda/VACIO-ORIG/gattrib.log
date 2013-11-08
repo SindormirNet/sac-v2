@@ -1,0 +1,50 @@
+gEDA/gattrib version 1.4.3.20081231
+gEDA/gattrib comes with ABSOLUTELY NO WARRANTY; see COPYING for more details.
+This is free software, and you are welcome to redistribute it under certain
+conditions; please see the COPYING file for more details.
+
+Read system-gafrc file [/etc/gEDA/system-gafrc]
+Read ~/.gEDA/gafrc file [/home/syvic/.gEDA/gafrc]
+Did not find optional local gafrc file [/home/syvic/sac2/VACIO/gafrc]
+Read system-gattribrc file [/etc/gEDA/system-gattribrc]
+
+In unknown file:
+   ?: 0* [primitive-load "/home/syvic/.gEDA/gattribrc"]
+In /home/syvic/.gEDA/gattribrc:
+   2: 1* [add-hook! ...
+
+/home/syvic/.gEDA/gattribrc:1:0: Unbound variable: add-component-hook
+Read ~/.gEDA/gattribrc file [/home/syvic/.gEDA/gattribrc]
+Did not find optional local gattribrc file [/home/syvic/sac2/VACIO/gattribrc]
+Loading file [/home/syvic/sac2/VACIO/sac2-vacio.sch]
+No se ha podido encontrar el archivo especificado gafrc [/home/syvic/sac2/VACIO/gafrc]
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _dist-license=_
+Se ha encontrado una propiedad no válida: _use-license=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _dist-license=_
+Se ha encontrado una propiedad no válida: _use-license=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _dist-license=_
+Se ha encontrado una propiedad no válida: _use-license=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _description=_

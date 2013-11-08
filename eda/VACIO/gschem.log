@@ -1,0 +1,34 @@
+Versión de gEDA/gschem 1.4.3.20081231
+gEDA/gschem no incluye NINGUNA GARANTÍA; véase el fichero COPYING para más detalles.
+Esto es software libre, y puede redistribuirlo bajo ciertas
+condiciones; por favor vea el fichero COPYING para más detalles.
+
+Leído archivo system-gafrc [/etc/gEDA/system-gafrc]
+Leído el archivo ~/.gEDA/gafrc [/home/syvic/.gEDA/gafrc]
+No se ha podido encontrar el archivo local gafrc [/home/syvic/sac2/VACIO/gafrc]
+Leído archivo system-gschemrc [/etc/gEDA/system-gschemrc]
+Ya se está usando el nombre de la librería [footprints]. Se usará [footprints<1>] en su lugar.
+Leído el archivo ~/.gEDA/gschemrc [/home/syvic/.gEDA/gschemrc]
+No se ha podido encontrar el archivo local gschemrc [/home/syvic/sac2/VACIO/gschemrc]
+Leído fichero de inicialización scm [/usr/share/gEDA/scheme/gschem.scm]
+Cargando esquema [/home/syvic/sac2/VACIO/sac2-vacio.sch]
+No se ha podido encontrar el archivo especificado gafrc [/home/syvic/sac2/VACIO/gafrc]
+Se ha encontrado más de un componente con el nombre [atmegax8-1.sym]
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado una propiedad no válida: _device=_
+Se ha encontrado más de un componente con el nombre [xtal.sym]
+Se ha encontrado más de un componente con el nombre [tc32m.sym]
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado una propiedad no válida: _documentation=_
+Se ha encontrado más de un componente con el nombre [rdm630.sym]
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _dist-license=_
+Se ha encontrado una propiedad no válida: _use-license=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _dist-license=_
+Se ha encontrado una propiedad no válida: _use-license=_
+Se ha encontrado una propiedad no válida: _description=_
+Se ha encontrado una propiedad no válida: _dist-license=_
+Se ha encontrado una propiedad no válida: _use-license=_

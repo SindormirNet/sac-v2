@@ -1,0 +1,44 @@
+unnamed_net21	U4-16 J7-2 
+unnamed_net20	U4-15 J7-1 
+unnamed_net19	D1-1 R11-1 
+unnamed_net18	D2-1 R8-1 
+nRST	R1-1 U2-15 
+nSS	R3-1 U2-16 
+MOSI	R2-1 U2-17 
+SCK	R4-1 U2-19 
+SCD	J5-6 U2-23 
+SCI	J5-5 U2-24 
+SLD	J5-4 U2-25 
+SLI	J5-3 U2-26 
+nPD	R5-1 U2-14 
+WD	R10-2 U2-12 
+MR	J6-4 U2-11 
+unnamed_net17	C14-2 X1-2 U2-10 
+unnamed_net16	C13-2 X1-1 U2-9 
+unnamed_net15	R8-2 U2-6 
+ML	J6-3 U2-5 
+unnamed_net14	U2-4 
+TX	U4-1 U2-3 
+RX	U4-2 U2-2 
+RESET	R10-1 R9-2 U1-3 S1-1 U2-1 
+unnamed_net13	R5-2 J3-10 
+unnamed_net12	R4-2 J3-7 
+unnamed_net11	R2-2 J3-5 
+IRQ	U2-13 J3-3 
+MISO	U2-18 J3-8 
+unnamed_net10	R3-2 J3-6 
+unnamed_net9	R1-2 J3-4 
+unnamed_net8	C8-1 U3-1 
+STX	U2-28 U3-10 
+SRX	U2-27 U3-9 
+unnamed_net7	J4-3 U3-8 
+unnamed_net6	J4-2 U3-7 
+unnamed_net5	C12-1 U3-6 
+unnamed_net4	C9-2 U3-5 
+unnamed_net3	C9-1 U3-4 
+unnamed_net2	C8-2 U3-3 
+unnamed_net1	C11-1 U3-2 
++3.3V	J3-2 C4-1 C3-1 VR2-3 
++5V	U4-5 J5-1 U1-2 R9-1 J2-1 C15-1 U2-20 U2-7 C10-1 C7-1 VR2-1 R11-2 C2-1 VR1-3 U3-16
+GND	U4-4 J5-2 J6-2 D2-2 D1-2 U1-1 S1-2 J2-2 C14-1 C13-1 C15-2 U2-22 U2-8 J3-9 J3-1 C12-2 C11-2 C10-2 J4-5 U3-15 C7-2 C4-2 C3-2 C2-2 C1-2 VR2-2 VR1-2 J1-2 VR1-4 VR2-4 J4-10 J4-11
+Vcc	J6-1 C1-1 VR1-1 J1-1 
